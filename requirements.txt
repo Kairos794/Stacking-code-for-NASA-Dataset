@@ -1,0 +1,19 @@
+# Dependencies pinned to the environment used for the reported experiments.
+# GPU wheels for torch 2.11.0 were installed from the CUDA 12.8 index:
+#   pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu128
+# For a CPU-only machine, install the CPU wheel of the same torch version first.
+
+torch==2.11.0
+transformers==5.16.1
+tokenizers==0.23.1
+datasets==5.0.1
+accelerate==1.15.0
+safetensors==0.8.0
+
+numpy==2.5.2
+pandas==3.0.5
+scikit-learn==1.9.0
+scipy==1.18.0
+
+matplotlib==3.11.1
+psutil==7.2.2

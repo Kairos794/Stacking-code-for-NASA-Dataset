@@ -5,9 +5,10 @@ Step 18 - Extended ensemble + stacking on top of ALL existing models.
 Two previously-untried ideas, zero training cost:
   1. PROB_AVG with an extended pool: all 8 single-label models PLUS the 6
      per-class binary classifiers (v1.10) as additional voters.
-  2. Stacking: concat every model's val probabilities (8*6 + 6 = 54 features)
-     and train a multinomial LogisticRegression (+ HistGBDT) on VAL to make the
-     final decision, then evaluate on TEST.
+  2. Stacking: concat every model's val probabilities (8 single-label models
+     * 6 classes = 48, plus 6 binary models * 6 pseudo-probabilities = 36,
+     i.e. 84 features) and train a multinomial LogisticRegression (+ HistGBDT)
+     on VAL to make the final decision, then evaluate on TEST.
 
 Inference results are cached as .npy under outputs/results/stack_probs/ so
 re-runs are instant.

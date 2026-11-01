@@ -4,7 +4,7 @@ Ensemble evaluation: majority vote + probability average across several
 trained ASRS classifiers, evaluated on the test split.
 
 Usage:
-    python 12_ensemble.py --models models/exp_a models/exp_b_bert ... [--no-save]
+    python scripts/03_ensemble.py --models models/exp_a models/exp_b_bert ... [--no-save]
 """
 from __future__ import annotations
 

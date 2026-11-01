@@ -1,0 +1,7 @@
+# Local artefacts that are too large to version
+data/
+models/
+outputs/
+
+__pycache__/
+*.pyc
