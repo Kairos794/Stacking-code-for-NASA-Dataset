@@ -1,5 +1,9 @@
-# Local artefacts that are too large to version
-data/
+# Local artefacts that are too large to version.
+# The cleaned splits are distributed gzip-compressed so that every file stays
+# below the hosting per-file limit; the plain .csv files are still ignored.
+data/*
+!data/*.csv.gz
+!data/checksums.sha256
 models/
 outputs/
 

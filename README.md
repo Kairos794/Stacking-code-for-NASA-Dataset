@@ -43,11 +43,16 @@ repository root without any path edits.
 
 ## Data
 
-The pipeline reads three fixed CSV files from `data/`:
+The pipeline reads three fixed splits from `data/`. They are **shipped with this
+repository** as gzip-compressed CSVs, so the reported numbers are reproducible
+from a clean clone:
 
-```
-data/train.csv   data/val.csv   data/test.csv
-```
+| File | Rows | Raw size | Compressed |
+|---|---|---|---|
+| `data/train.csv.gz` | 69,501 | 107.2 MB | ~41 MB |
+| `data/val.csv.gz` | 14,892 | 23.1 MB | ~9 MB |
+| `data/test.csv.gz` | 14,898 | 23.2 MB | ~9 MB |
+| `data/train_balanced.csv.gz` | 116,262 | 185.7 MB | ~70 MB |
 
 Each file carries the header `acn,text,label,label_id`, where `label_id` is an
 integer in `0..5` mapped to:
@@ -64,11 +69,23 @@ integer in `0..5` mapped to:
 Split sizes used in the experiments: 69,501 training, 14,892 validation and
 14,898 test reports; the ACN overlap between splits is zero.
 
-The CSVs are not versioned here because of their size. Place them in `data/`
-before running any script, or copy them from another location:
+The compression is lossless and `pandas.read_csv` decompresses `.csv.gz`
+transparently. `asrs_lib.data_utils.resolve_split` falls back to the `.csv.gz`
+file when the plain `.csv` is absent, so no code change is required. Verify the
+download against `data/checksums.sha256`:
 
 ```bash
-python scripts/01_prepare.py --copy /path/to/cleaned_data
+cd data && sha256sum -c checksums.sha256
+```
+
+`train_balanced.csv` is the oversampled variant used by the re-balancing
+experiments; the stacking path uses the unmodified `train.csv`. If you prefer
+plain CSVs, or want to supply your own cleaned data, decompress in place — the
+loader picks the uncompressed file up first:
+
+```bash
+python -c "import gzip,shutil,glob;[shutil.copyfileobj(gzip.open(p,'rb'),open(p[:-3],'wb')) for p in glob.glob('data/*.csv.gz')]"
+python scripts/01_prepare.py --copy /path/to/cleaned_data   # optional
 ```
 
 ## Model checkpoints

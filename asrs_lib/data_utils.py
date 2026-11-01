@@ -18,14 +18,30 @@ import pandas as pd
 from . import config
 
 
+def resolve_split(csv_path: Path) -> Path:
+    """
+    Return the on-disk path of a split.
+
+    The repository ships the splits gzip-compressed (``*.csv.gz``) to stay
+    within the hosting size limits, so a request for ``train.csv`` falls back
+    to ``train.csv.gz`` when the plain file is absent. pandas decompresses it
+    transparently.
+    """
+    path = Path(csv_path)
+    if path.exists():
+        return path
+    gz = path.with_name(path.name + ".gz")
+    if gz.exists():
+        return gz
+    raise FileNotFoundError(
+        f"Missing data file: {path} (also checked {gz.name}). Run "
+        "`scripts/01_prepare.py` or place the cleaned splits in the data/ folder."
+    )
+
+
 def load_split(csv_path: Path) -> pd.DataFrame:
     """Load one cleaned split as a DataFrame and validate its columns."""
-    path = Path(csv_path)
-    if not path.exists():
-        raise FileNotFoundError(
-            f"Missing data file: {path}. Run `scripts/01_prepare.py` or place "
-            "the cleaned CSVs (train.csv/val.csv/test.csv) in the data/ folder."
-        )
+    path = resolve_split(csv_path)
     df = pd.read_csv(path, dtype={"acn": object})
     needed = {"acn", "text", "label", "label_id"}
     if not needed.issubset(df.columns):
